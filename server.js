@@ -9,6 +9,7 @@ const { connectDB } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const ipDataRoutes = require('./routes/ipData');
 const userRoutes = require('./routes/users');
+const geoRoutes = require('./routes/geo');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ connectDB();
 app.use('/api', authRoutes);
 app.use('/api', ipDataRoutes);
 app.use('/api', userRoutes);
+app.use('/api', geoRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {

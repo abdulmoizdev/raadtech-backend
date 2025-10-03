@@ -1,0 +1,27 @@
+{
+  "213.139.10.70": {
+    "data": {
+      "ip": "213.139.10.70",
+      "city": "Karachi",
+      "region": "Sindh",
+      "country_name": "Pakistan",
+      "country_code": "PK",
+      "latitude": "24.8607",
+      "longitude": "67.0011",
+      "timezone": "Asia/Karachi",
+      "org": "Pakistan Telecommunication Company Limited",
+      "asn": "AS17557",
+      "postal": "74000",
+      "version": "IPv4",
+      "currency": null,
+      "continent_code": null,
+      "country_tld": null,
+      "languages": null,
+      "country_calling_code": null,
+      "in_eu": null,
+      "utc_offset": null
+    },
+    "timestamp": "2025-10-03T17:48:22.135Z",
+    "expiresAt": "2025-10-04T17:48:22.135Z"
+  }
+}
