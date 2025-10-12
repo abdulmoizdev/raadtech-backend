@@ -172,6 +172,78 @@ class IpData {
         }
     }
 
+    // Get all IP data without pagination (for exports)
+    static async findAllWithoutPagination(recordType = null) {
+        try {
+            const db = getDB();
+            const ipDataCollection = db.collection('ip_data');
+            
+            const pipeline = [
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'pid',
+                        foreignField: 'PID',
+                        as: 'userInfo'
+                    }
+                },
+                ...(recordType && recordType !== 'All' ? [{
+                    $match: {
+                        record_type: recordType
+                    }
+                }] : []),
+                {
+                    $unwind: {
+                        path: '$userInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $addFields: {
+                        user: {
+                            name: '$userInfo.name',
+                            email: '$userInfo.email',
+                            shift: '$userInfo.shift',
+                            shiftLabel: {
+                                $switch: {
+                                    branches: [
+                                        { case: { $eq: ['$userInfo.shift', 1] }, then: 'Morning' },
+                                        { case: { $eq: ['$userInfo.shift', 2] }, then: 'Evening' },
+                                        { case: { $eq: ['$userInfo.shift', 3] }, then: 'Night' }
+                                    ],
+                                    default: 'Unknown'
+                                }
+                            },
+                            shiftTime: {
+                                $switch: {
+                                    branches: [
+                                        { case: { $eq: ['$userInfo.shift', 1] }, then: '8:00 AM - 4:00 PM' },
+                                        { case: { $eq: ['$userInfo.shift', 2] }, then: '4:00 PM - 12:00 AM' },
+                                        { case: { $eq: ['$userInfo.shift', 3] }, then: '12:00 AM - 8:00 AM' }
+                                    ],
+                                    default: 'Unknown'
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        userInfo: 0
+                    }
+                },
+                {
+                    $sort: { createdAt: -1 }
+                }
+            ];
+            
+            const data = await ipDataCollection.aggregate(pipeline).toArray();
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // Get IP data by shift with pagination and user information
     static async findByShift(shiftId, page = 1, limit = 10, recordType = null) {
         try {

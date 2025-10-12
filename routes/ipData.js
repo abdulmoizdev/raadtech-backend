@@ -149,6 +149,28 @@ router.get('/ip-data', authenticateToken, requireAdmin, async (req, res) => {
     }
 });
 
+// Get all IP data without pagination for export (Admin only)
+router.get('/ip-data/export/all', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const { record_type } = req.query;
+
+        const data = await IpData.findAllWithoutPagination(record_type);
+
+        res.status(200).json({
+            success: true,
+            data: data,
+            message: `Retrieved ${data.length} records for export`
+        });
+
+    } catch (error) {
+        console.error('Export all IP data error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
 // Get IP data records by shift (Morning, Evening, Night)
 router.get('/ip-data/shift/:shiftId', authenticateToken, requireAdmin, async (req, res) => {
     try {
